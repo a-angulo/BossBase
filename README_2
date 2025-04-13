@@ -1,0 +1,35 @@
+# 📊 BossBase: The Ultimate Employee Tracker 💼✨
+
+## 🤔 What's This All About?
+
+Ever wanted to feel like the ultimate boss without all the paperwork?  
+**BossBase** is your terminal-powered super tool to manage employees, roles, and departments like a pro — no spreadsheets, no nonsense. Just power, precision, and a tiny bit of PostgreSQL magic. 🪄📊
+
+---
+
+## 🚀 Features That Slap
+
+- ✅ View all departments, roles, and employees
+- ➕ Add departments, roles, and employees with ease
+- 🔄 Update employee roles without breaking a sweat
+- 🔍 Bonus powers: see who's under who, sort by department, or just delete stuff like a savage
+- 💸 Calculate the money your departments are burning (budget overview)
+
+---
+
+## 🧰 What You’ll Need
+
+- Node.js
+- PostgreSQL
+- Terminal skills (or at least the ability to read instructions 👀)
+- Inquirer v8.2.4 (don’t go rogue with other versions)
+
+---
+
+## 🛠️ How to Set It Up
+
+1. Clone it like a boss:
+   ```bash
+   `git clone https://github.com/your-username/bossbase.git`
+2. Install the dependencies:
+`npm install`
