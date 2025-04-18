@@ -5,10 +5,6 @@
 Ever wanted to feel like the ultimate boss without all the paperwork?  
 **BossBase** is your terminal-powered super tool to manage employees, roles, and departments like a pro — no spreadsheets, no nonsense. Just power, precision, and a tiny bit of PostgreSQL magic. 🪄📊
 
----
-
-## 🚀 Features That Slap
-
 - ✅ View all departments, roles, and employees
 - ➕ Add departments, roles, and employees with ease
 - 🔄 Update employee roles without breaking a sweat
