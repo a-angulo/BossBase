@@ -22,4 +22,4 @@ CREATE TABLE employee (
   manager_id INTEGER REFERENCES employee(id) ON DELETE SET NULL
 );
 
-\i seeds.sql
+\i src/db/seeds.sql

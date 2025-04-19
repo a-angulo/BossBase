@@ -35,6 +35,64 @@ export default class Db {
     return this.query(sql);
   }
 
+  async findAllEmployeesFormatted() {
+    const sql = `
+      SELECT 
+        id, 
+        CONCAT(first_name, ' ', last_name) AS full_name
+      FROM employee
+      ORDER BY id;
+    `;
+    return this.query(sql);
+  }
+
+  async findAllRolesFormatted() {
+    const sql = `
+      SELECT 
+        role.id,
+        CONCAT(role.title, ' (', dept.name, ')') AS name
+      FROM role
+      LEFT JOIN department AS dept ON role.department_id = dept.id
+      ORDER BY role.id;
+    `;
+    return this.query(sql);
+  }
+
+  async findEmployeesForPrompt(includeNone = false) {
+    const sql = `
+      SELECT 
+        id AS value, 
+        CONCAT(first_name, ' ', last_name) AS name
+      FROM employee
+      ORDER BY id;
+    `;
+    const rows = await this.query(sql);
+    return includeNone ? [{ name: 'None', value: null }, ...rows] : rows;
+  }
+
+  async findRolesForPrompt() {
+    const sql = `
+      SELECT 
+        role.id AS value,
+        CONCAT(role.title, ' (', dept.name, ')') AS name
+      FROM role
+      LEFT JOIN department AS dept ON role.department_id = dept.id
+      ORDER BY role.id;
+    `;
+    return this.query(sql);
+  }
+
+  async findDepartmentsForPrompt() {
+    const sql = `
+      SELECT 
+        id AS value,
+        name
+      FROM department
+      ORDER BY id;
+    `;
+    return this.query(sql);
+  }
+
   async addNewEmployee({ first_name, last_name, role_id, manager_id }: 
     { first_name: string, last_name: string, role_id: number, manager_id?: number }) {
     const sql = `
@@ -51,6 +109,46 @@ export default class Db {
 
   async updateEmployeeRole(employeeId: number, newRoleId: number) {
     return this.query('UPDATE employee SET role_id = $1 WHERE id = $2 RETURNING *;', [newRoleId, employeeId]);
+  }
+
+  async updateEmployeeManager(employeeId: number, newManagerId: number) {
+    return this.query('UPDATE employee SET manager_id = $1 WHERE id = $2 RETURNING *;', [newManagerId, employeeId]);
+  }
+
+  async findEmployeesByManager(managerId: number) {
+    const sql = `
+      SELECT 
+        emp.id, 
+        emp.first_name, 
+        emp.last_name,
+        role.title,
+        dept.name AS department,
+        role.salary
+      FROM employee AS emp
+      LEFT JOIN role AS role ON emp.role_id = role.id
+      LEFT JOIN department AS dept ON role.department_id = dept.id
+      WHERE emp.manager_id = $1
+      ORDER BY emp.id;
+    `;
+    return this.query(sql, [managerId]);
+  }
+
+  async findEmployeesByDepartment(departmentId: number) {
+    const sql = `
+      SELECT 
+        emp.id, 
+        emp.first_name, 
+        emp.last_name,
+        role.title,
+        dept.name AS department,
+        role.salary
+      FROM employee AS emp
+      LEFT JOIN role AS role ON emp.role_id = role.id
+      LEFT JOIN department AS dept ON role.department_id = dept.id
+      WHERE dept.id = $1
+      ORDER BY emp.id;
+    `;
+    return this.query(sql, [departmentId]);
   }
 
   async findAllRoles() {
@@ -93,42 +191,17 @@ export default class Db {
     return this.query('DELETE FROM department WHERE id = $1;', [departmentId]);
   }
 
-  async updateEmployeeManager(employeeId: number, newManagerId: number) {
-    return this.query('UPDATE employee SET manager_id = $1 WHERE id = $2 RETURNING *;', [newManagerId, employeeId]);
-  }
-
-  async findEmployeesByManager(managerId: number) {
+  // ✅ NEW: View total department salary budget
+  async viewDepartmentBudget(departmentId: number) {
     const sql = `
       SELECT 
-        emp.id, 
-        emp.first_name, 
-        emp.last_name,
-        role.title,
         dept.name AS department,
-        role.salary
+        SUM(role.salary) AS total_budget
       FROM employee AS emp
-      LEFT JOIN role AS role ON emp.role_id = role.id
-      LEFT JOIN department AS dept ON role.department_id = dept.id
-      WHERE emp.manager_id = $1
-      ORDER BY emp.id;
-    `;
-    return this.query(sql, [managerId]);
-  }
-
-  async findEmployeesByDepartment(departmentId: number) {
-    const sql = `
-      SELECT 
-        emp.id, 
-        emp.first_name, 
-        emp.last_name,
-        role.title,
-        dept.name AS department,
-        role.salary
-      FROM employee AS emp
-      LEFT JOIN role AS role ON emp.role_id = role.id
+      LEFT JOIN role ON emp.role_id = role.id
       LEFT JOIN department AS dept ON role.department_id = dept.id
       WHERE dept.id = $1
-      ORDER BY emp.id;
+      GROUP BY dept.name;
     `;
     return this.query(sql, [departmentId]);
   }
