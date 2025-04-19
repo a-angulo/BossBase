@@ -40,6 +40,6 @@ VALUES
   ('Sam', 'Kash', 8, 2);
 
   -- Reset sequences so IDs match current max values
-SELECT setval('department_id_seq', (SELECT MAX(id) FROM department));
-SELECT setval('role_id_seq', (SELECT MAX(id) FROM role));
-SELECT setval('employee_id_seq', (SELECT MAX(id) FROM employee));
+SELECT setval('department_id_seq', (SELECT MAX(id) FROM department), false);
+SELECT setval('role_id_seq', (SELECT MAX(id) FROM role), false);
+SELECT setval('employee_id_seq', (SELECT MAX(id) FROM employee), false);
