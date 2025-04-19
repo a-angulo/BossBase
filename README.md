@@ -1,5 +1,9 @@
- 📊 BossBase: The Ultimate Employee Tracker 💼✨
- ---
+# 📊 BossBase: The Ultimate Employee Tracker 💼✨
+---
+🔗 **Live Demo:** [Watch the Walkthrough](https://drive.google.com/file/d/17z4o_kF0fREPLOYKGQmDhUgRutmNDgsC/view?usp=sharing)  
+![license-badge](https://img.shields.io/badge/License-MIT-yellow.svg)
+
+---
 ![license-badge](https://img.shields.io/badge/License-MIT-yellow.svg)
 
 ## 📚 Table of Contents  
