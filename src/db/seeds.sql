@@ -1,16 +1,16 @@
--- Clear existing data and reset IDs
-TRUNCATE TABLE employee, role, department RESTART IDENTITY CASCADE;
-
--- Seed Departments
-INSERT INTO department (name) 
+-- Step 1: Seed Departments
+INSERT INTO department (name)
 VALUES
-  ('Sales'),         -- id = 1
-  ('Engineering'),   -- id = 2
-  ('Finance'),       -- id = 3
-  ('Legal');         -- id = 4
+  ('Sales'),
+  ('Engineering'),
+  ('Finance'),
+  ('Legal');
 
--- Seed Roles (each role references department_id)
-INSERT INTO role (title, salary, department_id) 
+-- Step 2: Reset department sequence
+SELECT setval('department_id_seq', (SELECT MAX(id) FROM department), false);
+
+-- Step 3: Seed Roles
+INSERT INTO role (title, salary, department_id)
 VALUES
   ('Salesperson', 80000, 1),
   ('Lead Engineer', 150000, 2),
@@ -21,13 +21,11 @@ VALUES
   ('Lawyer', 190000, 4),
   ('Customer Service', 80000, 1);
 
--- Seed Employees
--- Assumes auto-incrementing IDs match insert order
--- Sarah (id 6) manages Mike (1) and Tom (7)
--- Ashley (id 2) manages Kevin (3) and Sam (9)
--- John (id 8) manages Mike too (if dual-manager logic applies)
+-- Step 4: Reset role sequence
+SELECT setval('role_id_seq', (SELECT MAX(id) FROM role), false);
 
-INSERT INTO employee (first_name, last_name, role_id, manager_id) 
+-- Step 5: Seed Employees
+INSERT INTO employee (first_name, last_name, role_id, manager_id)
 VALUES
   ('Mike', 'Chan', 1, 6),
   ('Ashley', 'Rodriguez', 2, NULL),
@@ -39,7 +37,5 @@ VALUES
   ('John', 'Doe', 1, NULL),
   ('Sam', 'Kash', 8, 2);
 
-  -- Reset sequences so IDs match current max values
-SELECT setval('department_id_seq', (SELECT MAX(id) FROM department), false);
-SELECT setval('role_id_seq', (SELECT MAX(id) FROM role), false);
+-- Step 6: Reset employee sequence
 SELECT setval('employee_id_seq', (SELECT MAX(id) FROM employee), false);
